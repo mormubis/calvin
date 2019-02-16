@@ -71,7 +71,7 @@
     "lint": "eslint \"**/*.js\" --fix",
     "lint:ci": "npm run lint -- --max-warnings 0",
     "postversion": "gitmoji --init",
-    "prepare": "(gitmoji -i && which gitmoji || npm i -g gitmoji-cli) || NODE_ENV=production npm run build",
+    "prepare": "(gitmoji -i && which gitmoji || npm i -g gitmoji-cli) && NODE_ENV=production npm run build",
     "preversion": "gitmoji --remove",
     "start": "rollup -c -w",
     "test": "jest --silent",
