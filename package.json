@@ -63,7 +63,7 @@
     "react": "^16.7.0",
     "prop-types": "^15.6.2"
   },
-  "repository": "adelarosab/spooner",
+  "repository": "adelarosab/calvin",
   "scripts": {
     "build": "rollup -c",
     "format": "npm run format:ci -- --write",
