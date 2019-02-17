@@ -58,7 +58,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.module.js",
-  "name": "calvin",
+  "name": "calvin-svg",
   "peerDependencies": {
     "react": "^16.7.0",
     "prop-types": "^15.6.2"
