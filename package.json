@@ -51,9 +51,7 @@
     "high order component",
     "hoc",
     "react",
-    "calvin",
-    "validate",
-    "validation"
+    "calvin"
   ],
   "license": "MIT",
   "main": "dist/index.js",
