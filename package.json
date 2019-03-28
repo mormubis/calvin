@@ -67,7 +67,7 @@
     "build": "rollup -c",
     "format": "npm run format:ci -- --write",
     "format:ci": "prettier --ignore-path .gitignore -l \"**/*.+(js|json|md|yml)\"",
-    "lint": "eslint \"**/*.js\" --fix",
+    "lint": "eslint \"src/**/*.js\" --fix",
     "lint:ci": "npm run lint -- --max-warnings 0",
     "postversion": "gitmoji --init",
     "prepare": "(gitmoji -i && which gitmoji || npm i -g gitmoji-cli) && NODE_ENV=production npm run build",
