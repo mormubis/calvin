@@ -1,7 +1,7 @@
 import babel from 'rollup-plugin-babel';
 import minify from 'rollup-plugin-babel-minify';
-import cleaner from 'rollup-plugin-cleaner';
 import commonjs from 'rollup-plugin-commonjs';
+import del from 'rollup-plugin-delete';
 import resolve from 'rollup-plugin-node-resolve';
 import external from 'rollup-plugin-peer-deps-external';
 import replace from 'rollup-plugin-replace';
@@ -30,7 +30,7 @@ const config = {
   ],
   plugins: [
     external({ includeDependencies: true }),
-    cleaner({
+    del({
       targets: ['./dist/'],
     }),
     babel({
