@@ -1,40 +1,14 @@
 import React from 'react';
-import hoistNonReactStatics from 'hoist-non-react-statics';
 import PropTypes from 'prop-types';
 
-function withDirection(WrappedComponent) {
-  const name = WrappedComponent.displayName || WrappedComponent.name;
+const useDirection = ({ bottom, left, right, top }) => {
+  const x1 = left ? 1 : 0;
+  const x2 = right ? 1 : 0;
+  const y1 = top ? 1 : 0;
+  const y2 = bottom ? 1 : 0;
 
-  const Direction = ({ bottom, left, right, top, ...props }) => (
-    <WrappedComponent
-      {...props}
-      x1={left ? 1 : 0}
-      x2={right ? 1 : 0}
-      y1={top ? 1 : 0}
-      y2={bottom ? 1 : 0}
-    />
-  );
-
-  Direction.displayName = `withDirection(${name})`;
-
-  Direction.defaultProps = {
-    bottom: false,
-    left: false,
-    right: false,
-    top: false,
-  };
-
-  Direction.propTypes = {
-    bottom: PropTypes.bool,
-    left: PropTypes.bool,
-    right: PropTypes.bool,
-    top: PropTypes.bool,
-  };
-
-  hoistNonReactStatics(Direction, WrappedComponent);
-
-  return Direction;
-}
+  return [x1, x2, y1, y2];
+};
 
 export const Stop = ({ color, offset, opacity, ...props }) => (
   <stop
@@ -45,34 +19,53 @@ export const Stop = ({ color, offset, opacity, ...props }) => (
   />
 );
 
+Stop.defaultProps = {
+  opacity: 1,
+};
+
 Stop.propTypes = {
   color: PropTypes.string.isRequired,
   offset: PropTypes.number.isRequired,
   opacity: PropTypes.number,
 };
 
-Stop.defaultProps = {
-  opacity: 1,
+export const Gradient = ({
+  bottom,
+  children,
+  id,
+  left,
+  right,
+  top,
+  ...props
+}) => {
+  const [x1, x2, y1, y2] = useDirection({ bottom, left, right, top });
+
+  return (
+    <defs>
+      <linearGradient id={id} x1={x1} x2={x2} y1={y1} y2={y2} {...props}>
+        {children}
+      </linearGradient>
+    </defs>
+  );
 };
 
-export const Gradient = ({ children, id, ...props }) => (
-  <defs>
-    <linearGradient id={id} {...props}>
-      {children}
-    </linearGradient>
-  </defs>
-);
-
 Gradient.defaultProps = {
-  children: undefined,
+  bottom: false,
+  left: false,
+  right: false,
+  top: false,
 };
 
 Gradient.propTypes = {
+  bottom: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
   id: PropTypes.string.isRequired,
+  left: PropTypes.bool,
+  right: PropTypes.bool,
+  top: PropTypes.bool,
 };
 
-export default withDirection(Gradient);
+export default Gradient;
