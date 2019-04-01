@@ -45,10 +45,10 @@ export class Arc extends PureComponent {
     }
 
     return arc({
-      endAngle: endAngle / 360 * 2 * Math.PI,
+      endAngle: (endAngle / 360) * 2 * Math.PI,
       innerRadius: gauge ? outerRadius - gauge : 0,
       outerRadius,
-      startAngle: startAngle / 360 * 2 * Math.PI,
+      startAngle: (startAngle / 360) * 2 * Math.PI,
     });
   }
 
