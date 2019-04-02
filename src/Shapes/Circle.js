@@ -6,7 +6,7 @@ export class Circle extends PureComponent {
     onClick() {},
     onFocus() {},
     onMouseOver() {},
-    radius: 1,
+    radius: 0,
     x: 0,
     y: 0,
   };

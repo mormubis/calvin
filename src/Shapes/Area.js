@@ -8,7 +8,6 @@ import Layer from '../Layer';
 export class Area extends PureComponent {
   static defaultProps = {
     color: '#222222',
-    curve: undefined,
     onClick() {},
     onFocus() {},
     onMouseOver() {},

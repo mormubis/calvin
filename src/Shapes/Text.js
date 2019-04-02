@@ -17,8 +17,7 @@ const VERTICAL = {
 
 export class Text extends PureComponent {
   static defaultProps = {
-    children: undefined,
-    color: undefined,
+    color: '#222222',
     onClick() {},
     onFocus() {},
     onMouseOver() {},
@@ -29,10 +28,6 @@ export class Text extends PureComponent {
   };
 
   static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
     color: PropTypes.string,
     onClick: PropTypes.func,
     onFocus: PropTypes.func,

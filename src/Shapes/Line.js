@@ -8,12 +8,11 @@ import Layer from '../Layer';
 export class Line extends PureComponent {
   static defaultProps = {
     color: '#222222',
-    curve: undefined,
     onClick() {},
     onFocus() {},
     onMouseOver() {},
     points: [],
-    width: 1,
+    width: 0,
     x: 0,
     y: 0,
   };

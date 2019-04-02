@@ -6,7 +6,7 @@ import Layer from '../Layer';
 
 export class Arc extends PureComponent {
   static defaultProps = {
-    color: undefined,
+    color: '#222222',
     endAngle: 0,
     gauge: 0,
     height: 0,
