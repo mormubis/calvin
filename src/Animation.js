@@ -3,27 +3,27 @@ import PropTypes from 'prop-types';
 
 import Easings from './Easings';
 
-const FPS = 16;
+const FPS = 60;
 
 export const Animation = ({
   attribute,
-  callback: cb,
   delay,
   duration,
   ease,
   from,
+  step,
   to,
   ...props
 }) => {
-  const callback = cb || (percentage => percentage * (to - from) + from);
   const easing = Easings[ease] || Easings.linear;
-  const frames = Math.round(duration / FPS);
+  const seconds = duration / 1000;
+  const frames = Math.round(seconds / FPS);
   const values = Array(frames)
     .fill(0)
     .map((ignore, index) => {
       const time = index / frames;
 
-      return callback(easing(time));
+      return step(easing(time), from, to);
     })
     .join(';');
 
@@ -44,19 +44,21 @@ export const Animation = ({
 Animation.defaultProps = {
   delay: 0,
   duration: 250,
-  callback: undefined,
   ease: 'linear',
   from: 0,
+  step(percentage, from, to) {
+    return from + (to - from) * percentage;
+  },
   to: 0,
 };
 
 Animation.propTypes = {
   attribute: PropTypes.string.isRequired,
-  callback: PropTypes.func,
   delay: PropTypes.number,
   duration: PropTypes.number,
   ease: PropTypes.string,
   from: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  step: PropTypes.func,
   to: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
