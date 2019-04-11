@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Curves from '../Curves';
 import Layer from '../Layer';
 
-export class Area extends PureComponent {
+class Area extends PureComponent {
   static defaultProps = {
     color: '#222222',
     onClick() {},

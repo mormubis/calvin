@@ -15,7 +15,7 @@ const VERTICAL = {
   top: 'hanging',
 };
 
-export class Text extends PureComponent {
+class Text extends PureComponent {
   static defaultProps = {
     color: '#222222',
     onClick() {},

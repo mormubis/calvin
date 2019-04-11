@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-export class Circle extends PureComponent {
+class Circle extends PureComponent {
   static defaultProps = {
     onClick() {},
     onFocus() {},

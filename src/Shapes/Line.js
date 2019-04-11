@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Curves from '../Curves';
 import Layer from '../Layer';
 
-export class Line extends PureComponent {
+class Line extends PureComponent {
   static defaultProps = {
     color: '#222222',
     onClick() {},

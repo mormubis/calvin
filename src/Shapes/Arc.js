@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Layer from '../Layer';
 
-export class Arc extends PureComponent {
+class Arc extends PureComponent {
   static defaultProps = {
     color: '#222222',
     endAngle: 0,

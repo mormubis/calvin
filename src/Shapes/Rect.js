@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-export class Rect extends PureComponent {
+class Rect extends PureComponent {
   static defaultProps = {
     color: '#222222',
     height: 0,
