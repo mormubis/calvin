@@ -12,7 +12,7 @@ class Line extends PureComponent {
     onFocus() {},
     onMouseOver() {},
     points: [],
-    width: 0,
+    thickness: 0,
     x: 0,
     y: 0,
   };
@@ -24,7 +24,7 @@ class Line extends PureComponent {
     onFocus: PropTypes.func,
     onMouseOver: PropTypes.func,
     points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
-    width: PropTypes.number,
+    thickness: PropTypes.number,
     x: PropTypes.number,
     y: PropTypes.number,
   };
@@ -42,12 +42,12 @@ class Line extends PureComponent {
   element = createRef();
 
   handleClick = event => {
-    const { onClick, width, x, y } = this.props;
+    const { onClick, thickness, x, y } = this.props;
 
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       length: this.length(),
-      width,
+      thickness,
       x,
       y,
     };
@@ -56,12 +56,12 @@ class Line extends PureComponent {
   };
 
   handleFocus = event => {
-    const { onFocus, width, x, y } = this.props;
+    const { onFocus, thickness, x, y } = this.props;
 
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       length: this.length(),
-      width,
+      thickness,
       x,
       y,
     };
@@ -70,12 +70,12 @@ class Line extends PureComponent {
   };
 
   handleMouseOver = event => {
-    const { onMouseOver, width, x, y } = this.props;
+    const { onMouseOver, thickness, x, y } = this.props;
 
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       length: this.length(),
-      width,
+      thickness,
       x,
       y,
     };
@@ -88,7 +88,7 @@ class Line extends PureComponent {
   }
 
   render() {
-    const { color, curve, points, width, x, y, ...props } = this.props;
+    const { color, curve, points, thickness, x, y, ...props } = this.props;
 
     const d = Line.d({ curve, points });
 
@@ -98,7 +98,7 @@ class Line extends PureComponent {
           stroke={color}
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth={width}
+          strokeWidth={thickness}
           {...props}
           d={d}
           fill="none"
