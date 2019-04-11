@@ -8,13 +8,13 @@ export class Arc extends PureComponent {
   static defaultProps = {
     color: '#222222',
     endAngle: 0,
-    gauge: 0,
     height: 0,
     onClick() {},
     onFocus() {},
     onMouseOver() {},
     radius: 0,
     startAngle: 0,
+    thickness: 0,
     width: 0,
     x: 0,
     y: 0,
@@ -23,19 +23,19 @@ export class Arc extends PureComponent {
   static propTypes = {
     color: PropTypes.string,
     endAngle: PropTypes.number,
-    gauge: PropTypes.number,
     height: PropTypes.number,
     onClick: PropTypes.func,
     onFocus: PropTypes.func,
     onMouseOver: PropTypes.func,
     radius: PropTypes.number,
     startAngle: PropTypes.number,
+    thickness: PropTypes.number,
     width: PropTypes.number,
     x: PropTypes.number,
     y: PropTypes.number,
   };
 
-  static d({ endAngle, gauge, height, radius, startAngle, width }) {
+  static d({ endAngle, thickness, height, radius, startAngle, width }) {
     const outerRadius = Math.min(height, width / 2);
 
     const arc = shape();
@@ -46,7 +46,7 @@ export class Arc extends PureComponent {
 
     return arc({
       endAngle: (endAngle / 360) * 2 * Math.PI,
-      innerRadius: gauge ? outerRadius - gauge : 0,
+      innerRadius: thickness ? outerRadius - thickness : 0,
       outerRadius,
       startAngle: (startAngle / 360) * 2 * Math.PI,
     });
@@ -92,12 +92,12 @@ export class Arc extends PureComponent {
   };
 
   centroid() {
-    const { endAngle, gauge, height, startAngle, width } = this.props;
+    const { endAngle, height, startAngle, thickness, width } = this.props;
     const outerRadius = Math.min(height, width / 2);
 
     return shape().centroid({
       endAngle,
-      innerRadius: outerRadius - gauge,
+      innerRadius: outerRadius - thickness,
       outerRadius,
       startAngle,
     });
@@ -107,17 +107,17 @@ export class Arc extends PureComponent {
     const {
       color,
       endAngle,
-      gauge,
       height,
       radius,
       startAngle,
+      thickness,
       width,
       x,
       y,
       ...props
     } = this.props;
 
-    const d = Arc.d({ endAngle, gauge, height, radius, startAngle, width });
+    const d = Arc.d({ endAngle, height, radius, startAngle, thickness, width });
 
     return (
       <Layer x={x} y={y}>
