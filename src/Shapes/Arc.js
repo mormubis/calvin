@@ -36,7 +36,7 @@ class Arc extends PureComponent {
   };
 
   static d({ endAngle, thickness, height, radius, startAngle, width }) {
-    const outerRadius = Math.min(height, width / 2);
+    const outerRadius = Math.min(height / 2, width / 2);
 
     const arc = shape();
 
