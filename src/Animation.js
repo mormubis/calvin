@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Easings from './Easings';
@@ -15,6 +15,17 @@ export const Animation = ({
   to,
   ...props
 }) => {
+  const element = useRef(null);
+
+  const isFirstRender = useRef(true);
+  useLayoutEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+    } else {
+      element.current.beginElement();
+    }
+  });
+
   const easing = Easings[ease] || Easings.linear;
   const seconds = duration / 1000;
   const frames = Math.round(seconds / FPS);
@@ -34,6 +45,7 @@ export const Animation = ({
       dur={`${duration}ms`}
       from={from}
       to={to}
+      ref={element}
       repeatCount={1}
       values={ease !== 'linear' || attribute === 'd' ? values : undefined}
       {...props}
