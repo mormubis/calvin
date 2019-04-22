@@ -24,11 +24,11 @@ export const Animation = ({
     } else {
       element.current.beginElement();
     }
-  });
+  }, [from, step, to]);
 
   const easing = Easings[ease] || Easings.linear;
   const seconds = duration / 1000;
-  const frames = Math.round(seconds / FPS);
+  const frames = Math.round(seconds * FPS);
   const values = Array(frames)
     .fill(0)
     .map((ignore, index) => {
@@ -43,11 +43,9 @@ export const Animation = ({
       attributeName={attribute}
       begin={`${delay}ms`}
       dur={`${duration}ms`}
-      from={from}
-      to={to}
       ref={element}
       repeatCount={1}
-      values={ease !== 'linear' || attribute === 'd' ? values : undefined}
+      {...(ease !== 'linear' || attribute === 'd' ? { values } : { from, to })}
       {...props}
     />
   );
