@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-export const Layer = ({ children, x, y, ...props }) => (
-  <g transform={`translate(${x}, ${y})`} {...props}>
+export const Layer = ({ children, x, y, transform = '', ...props }) => (
+  <g transform={`translate(${x}, ${y}) ${transform}`} {...props}>
     {children}
   </g>
 );
@@ -18,6 +18,7 @@ Layer.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  transform: PropTypes.string,
   x: PropTypes.number,
   y: PropTypes.number,
 };
