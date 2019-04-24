@@ -22,7 +22,7 @@ class Text extends PureComponent {
     onFocus() {},
     onMouseOver() {},
     textAlign: 'center',
-    verticalAlign: 'center',
+    verticalAlign: 'middle',
     x: 0,
     y: 0,
   };
