@@ -28,10 +28,15 @@ class Area extends PureComponent {
   };
 
   static d({ curve, points = [] }) {
-    const area = shape();
+    let area = shape();
+    const dimensions = (points[0] || []).length;
 
     if (curve) {
-      area.curve(Curves[curve]);
+      area = area.curve(Curves[curve] || Curves.Basis);
+    }
+
+    if (dimensions > 2) {
+      area = area.y0(d => d[2]);
     }
 
     return area(points);
