@@ -1,29 +1,22 @@
-import React, { PureComponent } from 'react';
+import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
+import randomColor from 'random-color';
+import _ from 'underscore';
 
-class Circle extends PureComponent {
-  static defaultProps = {
-    onClick() {},
-    onFocus() {},
-    onMouseOver() {},
-    radius: 0,
-    x: 0,
-    y: 0,
-  };
-
-  static propTypes = {
-    color: PropTypes.string,
-    onClick: PropTypes.func,
-    onFocus: PropTypes.func,
-    onMouseOver: PropTypes.func,
-    radius: PropTypes.number,
-    x: PropTypes.number,
-    y: PropTypes.number,
-  };
-
-  handleClick = event => {
-    const { onClick, radius, x, y } = this.props;
-
+const Circle = (
+  {
+    color = randomColor().hexString(),
+    onClick = () => {},
+    onFocus = () => {},
+    onMouseOver = () => {},
+    radius,
+    x,
+    y,
+    ...props
+  },
+  ref,
+) => {
+  const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       centroid: [(x + radius) / 2, (y + radius) / 2],
@@ -35,9 +28,7 @@ class Circle extends PureComponent {
     onClick(event);
   };
 
-  handleFocus = event => {
-    const { onFocus, radius, x, y } = this.props;
-
+  const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       centroid: [(x + radius) / 2, (y + radius) / 2],
@@ -49,9 +40,7 @@ class Circle extends PureComponent {
     onFocus(event);
   };
 
-  handleMouseOver = event => {
-    const { onMouseOver, radius, x, y } = this.props;
-
+  const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       centroid: [(x + radius) / 2, (y + radius) / 2],
@@ -63,22 +52,32 @@ class Circle extends PureComponent {
     onMouseOver(event);
   };
 
-  render() {
-    const { color, radius, x, y, ...props } = this.props;
+  return (
+    <circle
+      cx={x}
+      cy={y}
+      fill={color}
+      r={radius}
+      {...props}
+      onClick={handleClick}
+      onFocus={handleFocus}
+      onMouseOver={handleMouseOver}
+      ref={ref}
+    />
+  );
+};
 
-    return (
-      <circle
-        cx={x}
-        cy={y}
-        fill={color}
-        r={radius}
-        {...props}
-        onClick={this.handleClick}
-        onFocus={this.handleFocus}
-        onMouseOver={this.handleMouseOver}
-      />
-    );
-  }
-}
+Circle.propTypes = {
+  color: PropTypes.string,
+  onClick: PropTypes.func,
+  onFocus: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  radius: PropTypes.number,
+  x: PropTypes.number,
+  y: PropTypes.number,
+};
 
-export default Circle;
+export default _.compose(
+  memo,
+  forwardRef,
+)(Circle);
