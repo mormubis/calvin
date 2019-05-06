@@ -1,9 +1,7 @@
 {
   "author": "Adrian de la Rosa <adrian@delarosab.me>",
   "dependencies": {
-    "d3": "^5.9.2",
-    "underscore-es": "^1.9.8",
-    "validate.js": "^0.12.0"
+    "d3": "^5.9.2"
   },
   "description": "Build svgs with React (with some 🍬!!!)",
   "devDependencies": {
