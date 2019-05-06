@@ -1,34 +1,24 @@
-import React, { PureComponent } from 'react';
+import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
+import randomColor from 'random-color';
+import _ from 'underscore';
 
-class Rect extends PureComponent {
-  static defaultProps = {
-    color: '#222222',
-    height: 0,
-    onClick() {},
-    onFocus() {},
-    onMouseOver() {},
-    radius: 0,
-    width: 0,
-    x: 0,
-    y: 0,
-  };
-
-  static propTypes = {
-    color: PropTypes.string,
-    height: PropTypes.number,
-    onClick: PropTypes.func,
-    onFocus: PropTypes.func,
-    onMouseOver: PropTypes.func,
-    radius: PropTypes.number,
-    width: PropTypes.number,
-    x: PropTypes.number,
-    y: PropTypes.number,
-  };
-
-  handleClick = event => {
-    const { height, onClick, width, x, y } = this.props;
-
+const Rect = (
+  {
+    color = randomColor().hexString(),
+    height,
+    onClick = () => {},
+    onFocus = () => {},
+    onMouseOver = () => {},
+    radius = 0,
+    width,
+    x,
+    y,
+    ...props
+  },
+  ref,
+) => {
+  const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       centroid: [x + width / 2, y + height],
@@ -41,9 +31,7 @@ class Rect extends PureComponent {
     onClick(event);
   };
 
-  handleFocus = event => {
-    const { height, onFocus, width, x, y } = this.props;
-
+  const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       centroid: [x + width / 2, y + height],
@@ -56,9 +44,7 @@ class Rect extends PureComponent {
     onFocus(event);
   };
 
-  handleMouseOver = event => {
-    const { height, onMouseOver, width, x, y } = this.props;
-
+  const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       centroid: [x + width / 2, y + height],
@@ -71,20 +57,32 @@ class Rect extends PureComponent {
     onMouseOver(event);
   };
 
-  render() {
-    const { color, radius, ...props } = this.props;
+  return (
+    <rect
+      fill={color}
+      rx={radius}
+      {...props}
+      onClick={handleClick}
+      onFocus={handleFocus}
+      onMouseOver={handleMouseOver}
+      ref={ref}
+    />
+  );
+};
 
-    return (
-      <rect
-        fill={color}
-        rx={radius}
-        {...props}
-        onClick={this.handleClick}
-        onFocus={this.handleFocus}
-        onMouseOver={this.handleMouseOver}
-      />
-    );
-  }
-}
+Rect.propTypes = {
+  color: PropTypes.string,
+  height: PropTypes.number.isRequired,
+  onClick: PropTypes.func,
+  onFocus: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  radius: PropTypes.number,
+  width: PropTypes.number.isRequired,
+  x: PropTypes.number,
+  y: PropTypes.number,
+};
 
-export default Rect;
+export default _.compose(
+  memo,
+  forwardRef,
+)(Rect);
