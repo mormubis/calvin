@@ -1,63 +1,86 @@
-import React, { PureComponent } from 'react';
+import React, { forwardRef, memo } from 'react';
+import randomColor from 'random-color';
 import { arc as shape } from 'd3';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 
 import Layer from '../Layer';
 
-class Arc extends PureComponent {
-  static defaultProps = {
-    color: '#222222',
-    endAngle: 0,
-    height: 0,
-    onClick() {},
-    onFocus() {},
-    onMouseOver() {},
-    radius: 0,
-    startAngle: 0,
-    thickness: 0,
-    width: 0,
-    x: 0,
-    y: 0,
-  };
+const centroid = ({
+  endAngle = 0,
+  thickness,
+  height = 0,
+  startAngle = 0,
+  width = 0,
+  ...argv
+}) => {
+  const outerRadius = Math.min(height / 2, width / 2);
 
-  static propTypes = {
-    color: PropTypes.string,
-    endAngle: PropTypes.number,
-    height: PropTypes.number,
-    onClick: PropTypes.func,
-    onFocus: PropTypes.func,
-    onMouseOver: PropTypes.func,
-    radius: PropTypes.number,
-    startAngle: PropTypes.number,
-    thickness: PropTypes.number,
-    width: PropTypes.number,
-    x: PropTypes.number,
-    y: PropTypes.number,
-  };
+  const arc = shape();
 
-  static d({ endAngle, thickness, height, radius, startAngle, width }) {
-    const outerRadius = Math.min(height / 2, width / 2);
+  return arc.centroid({
+    ...argv,
+    endAngle: (endAngle / 360) * 2 * Math.PI,
+    innerRadius: thickness ? outerRadius - thickness : 0,
+    outerRadius,
+    startAngle: (startAngle / 360) * 2 * Math.PI,
+  });
+};
 
-    const arc = shape();
+const d = ({
+  endAngle = 0,
+  thickness,
+  height = 0,
+  startAngle = 0,
+  width = 0,
+  ...argv
+}) => {
+  const outerRadius = Math.min(height / 2, width / 2);
 
-    if (radius) {
-      arc.cornerRadius(radius);
-    }
+  const arc = shape();
 
-    return arc({
-      endAngle: (endAngle / 360) * 2 * Math.PI,
-      innerRadius: thickness ? outerRadius - thickness : 0,
-      outerRadius,
-      startAngle: (startAngle / 360) * 2 * Math.PI,
-    });
-  }
+  return arc({
+    ...argv,
+    endAngle: (endAngle / 360) * 2 * Math.PI,
+    innerRadius: thickness ? outerRadius - thickness : 0,
+    outerRadius,
+    startAngle: (startAngle / 360) * 2 * Math.PI,
+  });
+};
 
-  handleClick = event => {
-    const { onClick, x, y } = this.props;
+const arcAccessors = [
+  'context',
+  'cornerRadius',
+  'endAngle',
+  'innerRadius',
+  'outerRadius',
+  'padAngle',
+  'padRadius',
+  'startAngle',
+];
 
+const Arc = (
+  {
+    color = randomColor().hexString(),
+    onClick = () => {},
+    onFocus = () => {},
+    onMouseOver = () => {},
+    x,
+    y,
+    ...argv
+  },
+  ref,
+) => {
+  const arcAttributes = _.pick(argv, ...arcAccessors);
+  const props = _.omit(argv, ...arcAccessors);
+
+  const position = centroid(arcAttributes);
+  const path = d(arcAttributes);
+
+  const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
-      centroid: this.centroid(),
+      centroid: position,
       x,
       y,
     };
@@ -65,12 +88,10 @@ class Arc extends PureComponent {
     onClick(event);
   };
 
-  handleFocus = event => {
-    const { onFocus, x, y } = this.props;
-
+  const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
-      centroid: this.centroid(),
+      centroid: position,
       x,
       y,
     };
@@ -78,12 +99,10 @@ class Arc extends PureComponent {
     onFocus(event);
   };
 
-  handleMouseOver = event => {
-    const { onMouseOver, x, y } = this.props;
-
+  const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
-      centroid: this.centroid(),
+      centroid: position,
       x,
       y,
     };
@@ -91,47 +110,37 @@ class Arc extends PureComponent {
     onMouseOver(event);
   };
 
-  centroid() {
-    const { endAngle, height, startAngle, thickness, width } = this.props;
-    const outerRadius = Math.min(height, width / 2);
+  return (
+    <Layer x={x} y={y}>
+      <path
+        fill={color}
+        {...props}
+        d={path}
+        onClick={handleClick}
+        onFocus={handleFocus}
+        onMouseOver={handleMouseOver}
+        ref={ref}
+      />
+    </Layer>
+  );
+};
 
-    return shape().centroid({
-      endAngle,
-      innerRadius: outerRadius - thickness,
-      outerRadius,
-      startAngle,
-    });
-  }
+Arc.propTypes = {
+  color: PropTypes.string,
+  cornerRadius: PropTypes.number,
+  endAngle: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  onClick: PropTypes.func,
+  onFocus: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  startAngle: PropTypes.number.isRequired,
+  thickness: PropTypes.number,
+  width: PropTypes.number.isRequired,
+  x: PropTypes.number,
+  y: PropTypes.number,
+};
 
-  render() {
-    const {
-      color,
-      endAngle,
-      height,
-      radius,
-      startAngle,
-      thickness,
-      width,
-      x,
-      y,
-      ...props
-    } = this.props;
-
-    const d = Arc.d({ endAngle, height, radius, startAngle, thickness, width });
-
-    return (
-      <Layer x={x} y={y}>
-        <path
-          fill={color}
-          {...props}
-          d={d}
-          onClick={this.handleClick}
-          onFocus={this.handleFocus}
-          onMouseOver={this.handleMouseOver}
-        />
-      </Layer>
-    );
-  }
-}
-
-export default Arc;
+export default _.compose(
+  memo,
+  forwardRef,
+)(Arc);
