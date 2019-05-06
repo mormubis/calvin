@@ -1,7 +1,7 @@
 import React, { forwardRef, memo } from 'react';
-import randomColor from 'random-color';
 import { arc as shape } from 'd3';
 import PropTypes from 'prop-types';
+import randomColor from 'random-color';
 import _ from 'underscore';
 
 import Layer from '../Layer';
