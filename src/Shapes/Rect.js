@@ -1,23 +1,20 @@
 import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
 import randomColor from 'random-color';
-import _ from 'underscore';
 
-const Rect = (
-  {
-    color = randomColor().hexString(),
-    height,
-    onClick = () => {},
-    onFocus = () => {},
-    onMouseOver = () => {},
-    radius = 0,
-    width,
-    x,
-    y,
-    ...props
-  },
-  ref,
-) => {
+const Rect = ({
+  color = randomColor().hexString(),
+  forwardedRef,
+  height,
+  onClick = () => {},
+  onFocus = () => {},
+  onMouseOver = () => {},
+  radius = 0,
+  width,
+  x,
+  y,
+  ...props
+}) => {
   const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
@@ -65,13 +62,17 @@ const Rect = (
       onClick={handleClick}
       onFocus={handleFocus}
       onMouseOver={handleMouseOver}
-      ref={ref}
+      ref={forwardedRef}
     />
   );
 };
 
 Rect.propTypes = {
   color: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   height: PropTypes.number.isRequired,
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
@@ -82,7 +83,6 @@ Rect.propTypes = {
   y: PropTypes.number,
 };
 
-export default _.compose(
-  memo,
-  forwardRef,
-)(Rect);
+export default memo(
+  forwardRef((props, ref) => <Rect {...props} forwardedRef={ref} />),
+);

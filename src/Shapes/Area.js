@@ -48,6 +48,7 @@ const areaAccessors = [
 
 const Area = ({
   color = randomColor().hexString(),
+  forwardedRef,
   onClick = () => {},
   onFocus = () => {},
   onMouseOver = () => {},
@@ -103,6 +104,7 @@ const Area = ({
         onClick={handleClick}
         onFocus={handleFocus}
         onMouseOver={handleMouseOver}
+        ref={forwardedRef}
       />
     </Layer>
   );
@@ -111,6 +113,10 @@ const Area = ({
 Area.propTypes = {
   color: PropTypes.string,
   curve: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onMouseOver: PropTypes.func,
@@ -119,7 +125,6 @@ Area.propTypes = {
   y: PropTypes.number,
 };
 
-export default _.compose(
-  memo,
-  forwardRef,
-)(Area);
+export default memo(
+  forwardRef((props, ref) => <Area {...props} forwardedRef={ref} />),
+);

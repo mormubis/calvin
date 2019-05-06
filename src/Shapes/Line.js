@@ -27,19 +27,17 @@ const d = ({ curve: curveName, points = [], ...argv }) => {
 
 const lineAccessors = ['context', 'curve', 'defined'];
 
-const Line = (
-  {
-    color = randomColor().hexString(),
-    onClick = () => {},
-    onFocus = () => {},
-    onMouseOver = () => {},
-    thickness,
-    x,
-    y,
-    ...argv
-  },
-  ref,
-) => {
+const Line = ({
+  color = randomColor().hexString(),
+  forwardedRef,
+  onClick = () => {},
+  onFocus = () => {},
+  onMouseOver = () => {},
+  thickness,
+  x,
+  y,
+  ...argv
+}) => {
   const element = useRef(null);
   const lineAttributes = _.pick(argv, 'points', ...lineAccessors);
   const props = _.omit(argv, ...lineAccessors);
@@ -88,8 +86,8 @@ const Line = (
 
   useLayoutEffect(() => {
     // eslint-disable-next-line no-param-reassign
-    ref.current = element.current;
-  }, [ref]);
+    forwardedRef.current = element.current;
+  }, [forwardedRef]);
 
   return (
     <Layer label="line" x={x} y={y}>
@@ -102,7 +100,7 @@ const Line = (
         onClick={handleClick}
         onFocus={handleFocus}
         onMouseOver={handleMouseOver}
-        ref={ref}
+        ref={element}
       />
     </Layer>
   );
@@ -111,6 +109,10 @@ const Line = (
 Line.propTypes = {
   color: PropTypes.string,
   curve: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onMouseOver: PropTypes.func,
@@ -120,7 +122,6 @@ Line.propTypes = {
   y: PropTypes.number,
 };
 
-export default _.compose(
-  memo,
-  forwardRef,
-)(Line);
+export default memo(
+  forwardRef((props, ref) => <Line {...props} forwardedRef={ref} />),
+);

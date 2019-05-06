@@ -2,7 +2,6 @@ import React, { forwardRef, memo } from 'react';
 import { polygonArea as shape, polygonCentroid as c } from 'd3';
 import PropTypes from 'prop-types';
 import randomColor from 'random-color';
-import _ from 'underscore';
 
 import Layer from '../Layer';
 
@@ -14,19 +13,17 @@ const d = ({ points = [] }) => {
   return shape(points);
 };
 
-const Polygon = (
-  {
-    color = randomColor().hexString(),
-    onClick = () => {},
-    onFocus = () => {},
-    onMouseOver = () => {},
-    points = [],
-    x,
-    y,
-    ...props
-  },
-  ref,
-) => {
+const Polygon = ({
+  color = randomColor().hexString(),
+  forwardedRef,
+  onClick = () => {},
+  onFocus = () => {},
+  onMouseOver = () => {},
+  points = [],
+  x,
+  y,
+  ...props
+}) => {
   const position = centroid({ points });
   const path = d({ points });
 
@@ -72,7 +69,7 @@ const Polygon = (
         onClick={handleClick}
         onFocus={handleFocus}
         onMouseOver={handleMouseOver}
-        ref={ref}
+        ref={forwardedRef}
       />
     </Layer>
   );
@@ -80,6 +77,10 @@ const Polygon = (
 
 Polygon.propTypes = {
   color: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onMouseOver: PropTypes.func,
@@ -88,7 +89,6 @@ Polygon.propTypes = {
   y: PropTypes.number,
 };
 
-export default _.compose(
-  memo,
-  forwardRef,
-)(Polygon);
+export default memo(
+  forwardRef((props, ref) => <Polygon {...props} forwardedRef={ref} />),
+);

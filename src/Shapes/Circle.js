@@ -1,21 +1,18 @@
 import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
 import randomColor from 'random-color';
-import _ from 'underscore';
 
-const Circle = (
-  {
-    color = randomColor().hexString(),
-    onClick = () => {},
-    onFocus = () => {},
-    onMouseOver = () => {},
-    radius,
-    x,
-    y,
-    ...props
-  },
-  ref,
-) => {
+const Circle = ({
+  color = randomColor().hexString(),
+  forwardedRef,
+  onClick = () => {},
+  onFocus = () => {},
+  onMouseOver = () => {},
+  radius,
+  x,
+  y,
+  ...props
+}) => {
   const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
@@ -62,13 +59,17 @@ const Circle = (
       onClick={handleClick}
       onFocus={handleFocus}
       onMouseOver={handleMouseOver}
-      ref={ref}
+      ref={forwardedRef}
     />
   );
 };
 
 Circle.propTypes = {
   color: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onMouseOver: PropTypes.func,
@@ -77,7 +78,6 @@ Circle.propTypes = {
   y: PropTypes.number,
 };
 
-export default _.compose(
-  memo,
-  forwardRef,
-)(Circle);
+export default memo(
+  forwardRef((props, ref) => <Circle {...props} forwardedRef={ref} />),
+);

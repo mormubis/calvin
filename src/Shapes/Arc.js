@@ -59,18 +59,16 @@ const arcAccessors = [
   'startAngle',
 ];
 
-const Arc = (
-  {
-    color = randomColor().hexString(),
-    onClick = () => {},
-    onFocus = () => {},
-    onMouseOver = () => {},
-    x,
-    y,
-    ...argv
-  },
-  ref,
-) => {
+const Arc = ({
+  color = randomColor().hexString(),
+  forwardedRef,
+  onClick = () => {},
+  onFocus = () => {},
+  onMouseOver = () => {},
+  x,
+  y,
+  ...argv
+}) => {
   const arcAttributes = _.pick(argv, ...arcAccessors);
   const props = _.omit(argv, ...arcAccessors);
 
@@ -119,7 +117,7 @@ const Arc = (
         onClick={handleClick}
         onFocus={handleFocus}
         onMouseOver={handleMouseOver}
-        ref={ref}
+        ref={forwardedRef}
       />
     </Layer>
   );
@@ -129,6 +127,10 @@ Arc.propTypes = {
   color: PropTypes.string,
   cornerRadius: PropTypes.number,
   endAngle: PropTypes.number.isRequired,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   height: PropTypes.number.isRequired,
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
@@ -140,7 +142,6 @@ Arc.propTypes = {
   y: PropTypes.number,
 };
 
-export default _.compose(
-  memo,
-  forwardRef,
-)(Arc);
+export default memo(
+  forwardRef((props, ref) => <Arc {...props} forwardedRef={ref} />),
+);

@@ -1,6 +1,5 @@
 import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 
 const TEXT = {
   center: 'middle',
@@ -14,20 +13,18 @@ const VERTICAL = {
   top: 'hanging',
 };
 
-const Text = (
-  {
-    color = '#222',
-    onClick = () => {},
-    onFocus = () => {},
-    onMouseOver = () => {},
-    textAlign,
-    verticalAlign,
-    x,
-    y,
-    ...props
-  },
-  ref,
-) => {
+const Text = ({
+  color = '#222',
+  forwardedRef,
+  onClick = () => {},
+  onFocus = () => {},
+  onMouseOver = () => {},
+  textAlign,
+  verticalAlign,
+  x,
+  y,
+  ...props
+}) => {
   const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
@@ -68,7 +65,7 @@ const Text = (
       onClick={handleClick}
       onFocus={handleFocus}
       onMouseOver={handleMouseOver}
-      ref={ref}
+      ref={forwardedRef}
       x={x}
       y={y}
     />
@@ -77,6 +74,10 @@ const Text = (
 
 Text.propTypes = {
   color: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onMouseOver: PropTypes.func,
@@ -86,7 +87,6 @@ Text.propTypes = {
   y: PropTypes.number,
 };
 
-export default _.compose(
-  memo,
-  forwardRef,
-)(Text);
+export default memo(
+  forwardRef((props, ref) => <Text {...props} forwardedRef={ref} />),
+);
