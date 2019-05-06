@@ -1,7 +1,8 @@
 {
   "author": "Adrian de la Rosa <adrian@delarosab.me>",
   "dependencies": {
-    "d3": "^5.9.2"
+    "d3": "^5.9.2",
+    "uuid": "^3.3.2"
   },
   "description": "Build svgs with React (with some 🍬!!!)",
   "devDependencies": {
