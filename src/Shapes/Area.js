@@ -7,7 +7,7 @@ import _ from 'underscore';
 import Curves from '../Curves';
 import Layer from '../Layer';
 
-const centroid = ({ points }) => {
+const centroid = ({ points = [] }) => {
   const first = points[0] || [0, 0, 0];
   const last = points[points.length - 1] || [0, 0, 0];
 
@@ -19,7 +19,7 @@ const centroid = ({ points }) => {
   ];
 };
 
-const d = ({ curve: curveName, points, y0: rawY0, ...argv }) => {
+const d = ({ curve: curveName, points = [], y0: rawY0, ...argv }) => {
   const curve = Curves[curveName] || curveName;
   const dimensions = (points[0] || []).length;
   const y0 = rawY0 || (dimensions > 2 ? datum => datum[2] : undefined);
@@ -95,7 +95,7 @@ const Area = ({
   };
 
   return (
-    <Layer x={x} y={y}>
+    <Layer label="area" x={x} y={y}>
       <path
         fill={color}
         {...props}

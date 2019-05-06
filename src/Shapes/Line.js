@@ -1,52 +1,57 @@
-import React, { PureComponent, createRef } from 'react';
-import { line as shape } from 'd3';
+import React, { forwardRef, memo, useLayoutEffect, useRef } from 'react';
+import { extent, line as shape } from 'd3';
 import PropTypes from 'prop-types';
+import randomColor from 'random-color';
+import _ from 'underscore';
 
 import Curves from '../Curves';
 import Layer from '../Layer';
 
-class Line extends PureComponent {
-  static defaultProps = {
-    color: '#222222',
-    onClick() {},
-    onFocus() {},
-    onMouseOver() {},
-    points: [],
-    thickness: 0,
-    x: 0,
-    y: 0,
-  };
+const centroid = ({ points = [] }) => {
+  const [xMin, xMax] = extent(points, point => point[0]);
+  const [yMin, yMax] = extent(points, point => point[1]);
 
-  static propTypes = {
-    color: PropTypes.string,
-    curve: PropTypes.string,
-    onClick: PropTypes.func,
-    onFocus: PropTypes.func,
-    onMouseOver: PropTypes.func,
-    points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
-    thickness: PropTypes.number,
-    x: PropTypes.number,
-    y: PropTypes.number,
-  };
+  return [(xMin + xMax) / 2, (yMin + yMax) / 2];
+};
 
-  static d({ curve, points }) {
-    const line = shape();
+const d = ({ curve: curveName, points = [], ...argv }) => {
+  const curve = Curves[curveName] || curveName;
 
-    if (curve) {
-      line.curve(Curves[curve]);
-    }
+  const line = Object.entries({ ...argv, curve }).reduce(
+    (acc, [key, value]) => acc[key](value),
+    shape(),
+  );
 
-    return line(points);
-  }
+  return line(points);
+};
 
-  element = createRef();
+const lineAccessors = ['context', 'curve', 'defined'];
 
-  handleClick = event => {
-    const { onClick, thickness, x, y } = this.props;
+const Line = (
+  {
+    color = randomColor().hexString(),
+    onClick = () => {},
+    onFocus = () => {},
+    onMouseOver = () => {},
+    thickness,
+    x,
+    y,
+    ...argv
+  },
+  ref,
+) => {
+  const element = useRef(null);
+  const lineAttributes = _.pick(argv, 'points', ...lineAccessors);
+  const props = _.omit(argv, ...lineAccessors);
 
+  const position = centroid(lineAttributes);
+  const path = d(lineAttributes);
+
+  const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
-      length: this.length(),
+      centroid: position,
+      length: element.current ? element.current.getTotalLength() : 0,
       thickness,
       x,
       y,
@@ -55,12 +60,11 @@ class Line extends PureComponent {
     onClick(event);
   };
 
-  handleFocus = event => {
-    const { onFocus, thickness, x, y } = this.props;
-
+  const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
-      length: this.length(),
+      centroid: position,
+      length: element.current ? element.current.getTotalLength() : 0,
       thickness,
       x,
       y,
@@ -69,12 +73,11 @@ class Line extends PureComponent {
     onFocus(event);
   };
 
-  handleMouseOver = event => {
-    const { onMouseOver, thickness, x, y } = this.props;
-
+  const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
-      length: this.length(),
+      centroid: position,
+      length: element.current ? element.current.getTotalLength() : 0,
       thickness,
       x,
       y,
@@ -83,33 +86,41 @@ class Line extends PureComponent {
     onMouseOver(event);
   };
 
-  length() {
-    return this.element.current ? this.element.current.getTotalLength() : 0;
-  }
+  useLayoutEffect(() => {
+    // eslint-disable-next-line no-param-reassign
+    ref.current = element.current;
+  }, [ref]);
 
-  render() {
-    const { color, curve, points, thickness, x, y, ...props } = this.props;
+  return (
+    <Layer label="line" x={x} y={y}>
+      <path
+        fill="none"
+        stroke={color}
+        strokeWidth={thickness}
+        {...props}
+        d={path}
+        onClick={handleClick}
+        onFocus={handleFocus}
+        onMouseOver={handleMouseOver}
+        ref={ref}
+      />
+    </Layer>
+  );
+};
 
-    const d = Line.d({ curve, points });
+Line.propTypes = {
+  color: PropTypes.string,
+  curve: PropTypes.string,
+  onClick: PropTypes.func,
+  onFocus: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  thickness: PropTypes.number,
+  x: PropTypes.number,
+  y: PropTypes.number,
+};
 
-    return (
-      <Layer x={x} y={y}>
-        <path
-          stroke={color}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={thickness}
-          {...props}
-          d={d}
-          fill="none"
-          onClick={this.handleClick}
-          onFocus={this.handleFocus}
-          onMouseOver={this.handleMouseOver}
-          ref={this.element}
-        />
-      </Layer>
-    );
-  }
-}
-
-export default Line;
+export default _.compose(
+  memo,
+  forwardRef,
+)(Line);

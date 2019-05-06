@@ -111,7 +111,7 @@ const Arc = (
   };
 
   return (
-    <Layer x={x} y={y}>
+    <Layer label="arc" x={x} y={y}>
       <path
         fill={color}
         {...props}
