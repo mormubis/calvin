@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useDebugValue, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 const useDirection = ({ bottom, left, right, top }) => {
-  const x1 = left ? 1 : 0;
-  const x2 = right ? 1 : 0;
-  const y1 = top ? 1 : 0;
-  const y2 = bottom ? 1 : 0;
+  useDebugValue(
+    `Direction: bottom(${bottom}), left(${left}), right(${right}), top(${top})`,
+  );
 
-  return [x1, x2, y1, y2];
+  return useMemo(() => {
+    const x1 = left ? 1 : 0;
+    const x2 = right ? 1 : 0;
+    const y1 = top ? 1 : 0;
+    const y2 = bottom ? 1 : 0;
+
+    return [x1, x2, y1, y2];
+  }, [bottom, left, right, top]);
 };
 
 export const Stop = ({ color, offset, opacity, ...props }) => (
