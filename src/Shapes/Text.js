@@ -1,7 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
-
-import Layer from '../Layer';
+import _ from 'underscore';
 
 const TEXT = {
   center: 'middle',
@@ -15,32 +14,21 @@ const VERTICAL = {
   top: 'hanging',
 };
 
-class Text extends PureComponent {
-  static defaultProps = {
-    color: '#222222',
-    onClick() {},
-    onFocus() {},
-    onMouseOver() {},
-    textAlign: 'center',
-    verticalAlign: 'middle',
-    x: 0,
-    y: 0,
-  };
-
-  static propTypes = {
-    color: PropTypes.string,
-    onClick: PropTypes.func,
-    onFocus: PropTypes.func,
-    onMouseOver: PropTypes.func,
-    textAlign: PropTypes.oneOf(['center', 'left', 'right']),
-    verticalAlign: PropTypes.oneOf(['baseline', 'middle', 'top']),
-    x: PropTypes.number,
-    y: PropTypes.number,
-  };
-
-  handleClick = event => {
-    const { onClick, x, y } = this.props;
-
+const Text = (
+  {
+    color = '#222',
+    onClick = () => {},
+    onFocus = () => {},
+    onMouseOver = () => {},
+    textAlign,
+    verticalAlign,
+    x,
+    y,
+    ...props
+  },
+  ref,
+) => {
+  const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       x,
@@ -50,9 +38,7 @@ class Text extends PureComponent {
     onClick(event);
   };
 
-  handleFocus = event => {
-    const { onFocus, x, y } = this.props;
-
+  const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       x,
@@ -62,9 +48,7 @@ class Text extends PureComponent {
     onFocus(event);
   };
 
-  handleMouseOver = event => {
-    const { onMouseOver, x, y } = this.props;
-
+  const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
     event.shape = {
       x,
@@ -74,24 +58,35 @@ class Text extends PureComponent {
     onMouseOver(event);
   };
 
-  render() {
-    const { color, textAlign, verticalAlign, x, y, ...props } = this.props;
+  return (
+    <text
+      alignmentBaseline={VERTICAL[verticalAlign]}
+      dominantBaseline={VERTICAL[verticalAlign]}
+      fill={color}
+      textAnchor={TEXT[textAlign]}
+      {...props}
+      onClick={handleClick}
+      onFocus={handleFocus}
+      onMouseOver={handleMouseOver}
+      ref={ref}
+      x={x}
+      y={y}
+    />
+  );
+};
 
-    return (
-      <Layer x={x} y={y}>
-        <text
-          alignmentBaseline={VERTICAL[verticalAlign]}
-          dominantBaseline={VERTICAL[verticalAlign]}
-          fill={color}
-          textAnchor={TEXT[textAlign]}
-          {...props}
-          onClick={this.handleClick}
-          onFocus={this.handleFocus}
-          onMouseOver={this.handleMouseOver}
-        />
-      </Layer>
-    );
-  }
-}
+Text.propTypes = {
+  color: PropTypes.string,
+  onClick: PropTypes.func,
+  onFocus: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  textAlign: PropTypes.oneOf(['center', 'left', 'right']),
+  verticalAlign: PropTypes.oneOf(['baseline', 'middle', 'top']),
+  x: PropTypes.number,
+  y: PropTypes.number,
+};
 
-export default Text;
+export default _.compose(
+  memo,
+  forwardRef,
+)(Text);
