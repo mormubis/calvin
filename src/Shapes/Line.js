@@ -114,8 +114,8 @@ Line.propTypes = {
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onMouseOver: PropTypes.func,
-  points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
-  thickness: PropTypes.number,
+  points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+  thickness: PropTypes.number.isRequired,
   x: PropTypes.number,
   y: PropTypes.number,
 };

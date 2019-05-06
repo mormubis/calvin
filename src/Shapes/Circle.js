@@ -72,7 +72,7 @@ Circle.propTypes = {
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
   onMouseOver: PropTypes.func,
-  radius: PropTypes.number,
+  radius: PropTypes.number.isRequired,
   x: PropTypes.number,
   y: PropTypes.number,
 };
