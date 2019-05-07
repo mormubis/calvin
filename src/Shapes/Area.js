@@ -125,6 +125,10 @@ Area.propTypes = {
   y: PropTypes.number,
 };
 
-export default memo(
+const AreaForwarded = memo(
   forwardRef((props, ref) => <Area {...props} forwardedRef={ref} />),
 );
+
+AreaForwarded.d = d;
+
+export default AreaForwarded;

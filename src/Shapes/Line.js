@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useLayoutEffect, useRef } from 'react';
+import React, { forwardRef, memo, useRef } from 'react';
 import { extent, line as shape } from 'd3';
 import PropTypes from 'prop-types';
 import randomColor from 'random-color';
@@ -17,10 +17,9 @@ const centroid = ({ points = [] }) => {
 const d = ({ curve: curveName, points = [], ...argv }) => {
   const curve = Curves[curveName] || curveName;
 
-  const line = Object.entries({ ...argv, curve }).reduce(
-    (acc, [key, value]) => acc[key](value),
-    shape(),
-  );
+  const line = Object.entries({ ...argv, curve })
+    .filter(([, value]) => Boolean(value))
+    .reduce((acc, [key, value]) => acc[key](value), shape());
 
   return line(points);
 };
@@ -84,11 +83,6 @@ const Line = ({
     onMouseOver(event);
   };
 
-  useLayoutEffect(() => {
-    // eslint-disable-next-line no-param-reassign
-    forwardedRef.current = element.current;
-  }, [forwardedRef]);
-
   return (
     <Layer label="line" x={x} y={y}>
       <path
@@ -100,7 +94,14 @@ const Line = ({
         onClick={handleClick}
         onFocus={handleFocus}
         onMouseOver={handleMouseOver}
-        ref={element}
+        ref={node => {
+          element.current = node;
+
+          if (forwardedRef) {
+            // eslint-disable-next-line no-param-reassign
+            forwardedRef.current = node;
+          }
+        }}
       />
     </Layer>
   );
@@ -122,6 +123,10 @@ Line.propTypes = {
   y: PropTypes.number,
 };
 
-export default memo(
+const LineForwarded = memo(
   forwardRef((props, ref) => <Line {...props} forwardedRef={ref} />),
 );
+
+LineForwarded.d = d;
+
+export default LineForwarded;

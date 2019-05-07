@@ -142,6 +142,10 @@ Arc.propTypes = {
   y: PropTypes.number,
 };
 
-export default memo(
+const ArcForwarded = memo(
   forwardRef((props, ref) => <Arc {...props} forwardedRef={ref} />),
 );
+
+ArcForwarded.d = d;
+
+export default ArcForwarded;
