@@ -15,7 +15,7 @@ export const Layer = ({
 
   return (
     <g
-      aria-label={id}
+      aria-label={id.current}
       transform={`translate(${x}, ${y}) ${transform}`}
       {...props}
       ref={forwardedRef}
