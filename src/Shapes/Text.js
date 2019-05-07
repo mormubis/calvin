@@ -21,8 +21,8 @@ const Text = ({
   onMouseOver = () => {},
   textAlign,
   verticalAlign,
-  x,
-  y,
+  x = 0,
+  y = 0,
   ...props
 }) => {
   const handleClick = event => {
@@ -66,8 +66,8 @@ const Text = ({
       onFocus={handleFocus}
       onMouseOver={handleMouseOver}
       ref={forwardedRef}
-      x={x}
-      y={y}
+      x={`${x}`}
+      y={`${y}`}
     />
   );
 };
