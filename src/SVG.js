@@ -11,19 +11,13 @@ export const SVG = ({ children, height, width, ...props }) => (
   </svg>
 );
 
-SVG.defaultProps = {
-  children: undefined,
-  height: 0,
-  width: 0,
-};
-
 SVG.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
-  height: PropTypes.number,
-  width: PropTypes.number,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
 };
 
 export default SVG;

@@ -7,13 +7,13 @@ const FPS = 60;
 
 export const Animation = ({
   attribute,
-  delay,
-  duration,
-  ease,
-  from,
+  delay = 0,
+  duration = 250,
+  ease = 'linear',
+  from = 0,
   maxCount,
-  step,
-  to,
+  to = 0,
+  step = percentage => from + (to - from) * percentage,
   ...props
 }) => {
   const count = useRef(0);
@@ -40,7 +40,7 @@ export const Animation = ({
     .map((ignore, index) => {
       const time = index / frames;
 
-      return step(easing(time), from, to);
+      return step(easing(time));
     })
     .join(';');
 
@@ -55,17 +55,6 @@ export const Animation = ({
       {...props}
     />
   );
-};
-
-Animation.defaultProps = {
-  delay: 0,
-  duration: 250,
-  ease: 'linear',
-  from: 0,
-  step(percentage, from, to) {
-    return from + (to - from) * percentage;
-  },
-  to: 0,
 };
 
 Animation.propTypes = {

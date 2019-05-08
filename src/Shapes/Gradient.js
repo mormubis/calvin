@@ -16,7 +16,7 @@ const useDirection = ({ bottom, left, right, top }) => {
   }, [bottom, left, right, top]);
 };
 
-export const Stop = ({ color, offset, opacity, ...props }) => (
+export const Stop = ({ color, offset, opacity = 1, ...props }) => (
   <stop
     offset={`${offset}%`}
     stopColor={color}
@@ -24,10 +24,6 @@ export const Stop = ({ color, offset, opacity, ...props }) => (
     {...props}
   />
 );
-
-Stop.defaultProps = {
-  opacity: 1,
-};
 
 Stop.propTypes = {
   color: PropTypes.string.isRequired,
@@ -53,13 +49,6 @@ export const Gradient = ({
       </linearGradient>
     </defs>
   );
-};
-
-Gradient.defaultProps = {
-  bottom: false,
-  left: false,
-  right: false,
-  top: false,
 };
 
 Gradient.propTypes = {
