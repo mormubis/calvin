@@ -11,19 +11,25 @@ export const Animation = ({
   duration,
   ease,
   from,
+  maxCount,
   step,
   to,
   ...props
 }) => {
+  const count = useRef(0);
   const element = useRef(null);
 
   const isFirstRender = useRef(true);
   useLayoutEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-    } else {
-      element.current.beginElement();
+    if (!maxCount || count <= maxCount) {
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+      } else {
+        element.current.beginElement();
+      }
     }
+
+    count.current += 1;
   }, [from, step, to]);
 
   const easing = Easings[ease] || Easings.linear;
@@ -68,6 +74,7 @@ Animation.propTypes = {
   duration: PropTypes.number,
   ease: PropTypes.string,
   from: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  maxCount: PropTypes.number,
   step: PropTypes.func,
   to: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
