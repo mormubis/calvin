@@ -57,7 +57,11 @@ const Rect = ({
   return (
     <rect
       fill={color}
+      height={height}
       rx={radius}
+      width={width}
+      x={x}
+      y={y}
       {...props}
       onClick={handleClick}
       onFocus={handleFocus}
