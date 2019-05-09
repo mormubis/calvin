@@ -28,6 +28,7 @@ const centroid = ({
 };
 
 const d = ({
+  cornerRadius,
   endAngle = 0,
   thickness,
   height = 0,
@@ -37,7 +38,11 @@ const d = ({
 }) => {
   const outerRadius = Math.min(height / 2, width / 2);
 
-  const arc = shape();
+  let arc = shape();
+
+  if (cornerRadius) {
+    arc = arc.cornerRadius(cornerRadius);
+  }
 
   return arc({
     ...argv,
