@@ -69,8 +69,14 @@ const Arc = ({
   y,
   ...argv
 }) => {
-  const arcAttributes = _.pick(argv, 'height', 'width', ...arcAccessors);
-  const props = _.omit(argv, 'height', 'width', ...arcAccessors);
+  const arcAttributes = _.pick(
+    argv,
+    'height',
+    'thickness',
+    'width',
+    ...arcAccessors,
+  );
+  const props = _.omit(argv, 'height', 'thickness', 'width', ...arcAccessors);
 
   const position = centroid(arcAttributes);
   const path = d(arcAttributes);
