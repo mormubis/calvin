@@ -57,7 +57,7 @@ const Area = ({
   ...argv
 }) => {
   const areaAttributes = _.pick(argv, 'points', ...areaAccessors);
-  const props = _.omit(argv, ...areaAccessors);
+  const props = _.omit(argv, 'points', ...areaAccessors);
 
   const position = centroid(areaAttributes);
   const path = d(areaAttributes);
