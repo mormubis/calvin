@@ -53,7 +53,7 @@ const config = {
           }),
         ]
       : []),
-    visualizer({ filename: `./statistics.${env}.html` }),
+    visualizer({ filename: './statistics.html' }),
   ],
 };
 

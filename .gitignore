@@ -9,5 +9,4 @@
 
 # statistics
 /.size-snapshot.json
-/statistics.development.html
-/statistics.production.html
+/statistics.html
