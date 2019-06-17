@@ -3,6 +3,7 @@
   "dependencies": {
     "d3": "^5.9.2",
     "random-color": "^1.0.1",
+    "randomcolor": "^0.5.4",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2"
   },
