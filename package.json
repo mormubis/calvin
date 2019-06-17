@@ -43,7 +43,9 @@
     "rollup-plugin-visualizer": "^2.2.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "index.js",
+    "index.module.js"
   ],
   "keywords": [
     "svg",
@@ -52,8 +54,8 @@
     "calvin"
   ],
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.module.js",
+  "main": "index.js",
+  "module": "index.module.js",
   "name": "calvin-svg",
   "peerDependencies": {
     "react": "^16.8.0",
