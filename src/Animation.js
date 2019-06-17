@@ -5,7 +5,7 @@ import Easings from './Easings';
 
 const FPS = 60;
 
-export const Animation = ({
+const Animation = ({
   attribute,
   delay = 0,
   duration = 250,

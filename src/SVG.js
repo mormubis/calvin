@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
-export const SVG = ({ children, forwardedRef, height, width, ...props }) => (
+const SVG = ({ children, forwardedRef, height, width, ...props }) => (
   <svg
     preserveAspectRatio="xMidYMid meet"
     viewBox={`0 0 ${width} ${height}`}
