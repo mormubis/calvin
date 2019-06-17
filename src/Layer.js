@@ -1,21 +1,18 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid/v4';
 
-export const Layer = ({
+const Layer = ({
   children,
   forwardedRef,
-  label = uuid(),
+  label,
   transform = '',
   x = 0,
   y = 0,
   ...props
 }) => {
-  const id = useRef(label);
-
   return (
     <g
-      aria-label={id.current}
+      aria-label={label}
       transform={`translate(${x}, ${y}) ${transform}`}
       {...props}
       ref={forwardedRef}
