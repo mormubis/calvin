@@ -11,7 +11,8 @@ export const Animation = ({
   duration = 250,
   ease = 'linear',
   from = 0,
-  maxCount,
+  once = false,
+  maxCount = once ? 1 : 0,
   to = 0,
   step = percentage => from + (to - from) * percentage,
   ...props
@@ -64,6 +65,7 @@ Animation.propTypes = {
   ease: PropTypes.string,
   from: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   maxCount: PropTypes.number,
+  once: PropTypes.bool,
   step: PropTypes.func,
   to: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
