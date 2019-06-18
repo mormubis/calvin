@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Easings from './Easings';
@@ -10,6 +10,7 @@ const Animation = ({
   delay = 0,
   duration = 250,
   ease = 'linear',
+  forwardedRef,
   from = 0,
   once = false,
   maxCount = once ? 1 : 0,
@@ -50,7 +51,14 @@ const Animation = ({
       attributeName={attribute}
       begin={`${delay}ms`}
       dur={`${duration}ms`}
-      ref={element}
+      ref={node => {
+        element.current = node;
+
+        if (forwardedRef) {
+          // eslint-disable-next-line no-param-reassign
+          forwardedRef.current = node;
+        }
+      }}
       repeatCount={1}
       {...(ease !== 'linear' || attribute === 'd' ? { values } : { from, to })}
       {...props}
@@ -63,6 +71,10 @@ Animation.propTypes = {
   delay: PropTypes.number,
   duration: PropTypes.number,
   ease: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   from: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   maxCount: PropTypes.number,
   once: PropTypes.bool,
@@ -70,4 +82,6 @@ Animation.propTypes = {
   to: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
-export default Animation;
+export default forwardRef((props, ref) => (
+  <Animation {...props} forwardedRef={ref} />
+));

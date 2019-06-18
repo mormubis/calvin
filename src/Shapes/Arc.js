@@ -1,59 +1,12 @@
 import React, { forwardRef, memo } from 'react';
 import { arc as shape } from 'd3';
 import PropTypes from 'prop-types';
-import randomColor from 'random-color';
+import randomColor from 'randomcolor';
 import _ from 'underscore';
 
 import Layer from '../Layer';
 
-const centroid = ({
-  endAngle = 0,
-  thickness,
-  height = 0,
-  startAngle = 0,
-  width = 0,
-  ...argv
-}) => {
-  const outerRadius = Math.min(height / 2, width / 2);
-
-  const arc = shape();
-
-  return arc.centroid({
-    ...argv,
-    endAngle: (endAngle / 360) * 2 * Math.PI,
-    innerRadius: thickness ? outerRadius - thickness : 0,
-    outerRadius,
-    startAngle: (startAngle / 360) * 2 * Math.PI,
-  });
-};
-
-const d = ({
-  cornerRadius,
-  endAngle = 0,
-  thickness,
-  height = 0,
-  startAngle = 0,
-  width = 0,
-  ...argv
-}) => {
-  const outerRadius = Math.min(height / 2, width / 2);
-
-  let arc = shape();
-
-  if (cornerRadius) {
-    arc = arc.cornerRadius(cornerRadius);
-  }
-
-  return arc({
-    ...argv,
-    endAngle: (endAngle / 360) * 2 * Math.PI,
-    innerRadius: thickness ? outerRadius - thickness : 0,
-    outerRadius,
-    startAngle: (startAngle / 360) * 2 * Math.PI,
-  });
-};
-
-const arcAccessors = [
+const ACCESSORS = [
   'context',
   'cornerRadius',
   'endAngle',
@@ -65,7 +18,7 @@ const arcAccessors = [
 ];
 
 const Arc = ({
-  color = randomColor().hexString(),
+  color = randomColor(),
   forwardedRef,
   onClick = () => {},
   onFocus = () => {},
@@ -79,42 +32,30 @@ const Arc = ({
     'height',
     'thickness',
     'width',
-    ...arcAccessors,
+    ...ACCESSORS,
   );
-  const props = _.omit(argv, 'height', 'thickness', 'width', ...arcAccessors);
+  const props = _.omit(argv, 'height', 'thickness', 'width', ...ACCESSORS);
 
-  const position = centroid(arcAttributes);
-  const path = d(arcAttributes);
+  const centroid = Arc.centroid(arcAttributes);
+  const d = Arc.d(arcAttributes);
 
   const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: position,
-      x,
-      y,
-    };
+    event.shape = { centroid, x, y };
 
     onClick(event);
   };
 
   const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: position,
-      x,
-      y,
-    };
+    event.shape = { centroid, x, y };
 
     onFocus(event);
   };
 
   const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: position,
-      x,
-      y,
-    };
+    event.shape = { centroid, x, y };
 
     onMouseOver(event);
   };
@@ -124,7 +65,7 @@ const Arc = ({
       <path
         fill={color}
         {...props}
-        d={path}
+        d={d}
         onClick={handleClick}
         onFocus={handleFocus}
         onMouseOver={handleMouseOver}
@@ -153,10 +94,57 @@ Arc.propTypes = {
   y: PropTypes.number,
 };
 
+Arc.centroid = ({
+  endAngle = 0,
+  thickness,
+  height = 0,
+  startAngle = 0,
+  width = 0,
+  ...argv
+}) => {
+  const outerRadius = Math.min(height / 2, width / 2);
+
+  const arc = shape();
+
+  return arc.centroid({
+    ...argv,
+    endAngle: (endAngle / 360) * 2 * Math.PI,
+    innerRadius: thickness ? outerRadius - thickness : 0,
+    outerRadius,
+    startAngle: (startAngle / 360) * 2 * Math.PI,
+  });
+};
+
+Arc.d = ({
+  cornerRadius,
+  endAngle = 0,
+  thickness,
+  height = 0,
+  startAngle = 0,
+  width = 0,
+  ...argv
+}) => {
+  const outerRadius = Math.min(height / 2, width / 2);
+
+  let arc = shape();
+
+  if (cornerRadius) {
+    arc = arc.cornerRadius(cornerRadius);
+  }
+
+  return arc({
+    ...argv,
+    endAngle: (endAngle / 360) * 2 * Math.PI,
+    innerRadius: thickness ? outerRadius - thickness : 0,
+    outerRadius,
+    startAngle: (startAngle / 360) * 2 * Math.PI,
+  });
+};
+
 const ArcForwarded = memo(
   forwardRef((props, ref) => <Arc {...props} forwardedRef={ref} />),
 );
 
-ArcForwarded.d = d;
+ArcForwarded.d = Arc.d;
 
 export default ArcForwarded;

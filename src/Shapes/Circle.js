@@ -1,9 +1,9 @@
 import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
-import randomColor from 'random-color';
+import randomColor from 'randomcolor';
 
 const Circle = ({
-  color = randomColor().hexString(),
+  color = randomColor(),
   forwardedRef,
   onClick = () => {},
   onFocus = () => {},
@@ -14,37 +14,25 @@ const Circle = ({
   ...props
 }) => {
   const handleClick = event => {
+    const centroid = [(x + radius) / 2, (y + radius) / 2];
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: [(x + radius) / 2, (y + radius) / 2],
-      radius,
-      x,
-      y,
-    };
+    event.shape = { centroid, radius, x, y };
 
     onClick(event);
   };
 
   const handleFocus = event => {
+    const centroid = [(x + radius) / 2, (y + radius) / 2];
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: [(x + radius) / 2, (y + radius) / 2],
-      radius,
-      x,
-      y,
-    };
+    event.shape = { centroid, radius, x, y };
 
     onFocus(event);
   };
 
   const handleMouseOver = event => {
+    const centroid = [(x + radius) / 2, (y + radius) / 2];
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: [(x + radius) / 2, (y + radius) / 2],
-      radius,
-      x,
-      y,
-    };
+    event.shape = { centroid, radius, x, y };
 
     onMouseOver(event);
   };

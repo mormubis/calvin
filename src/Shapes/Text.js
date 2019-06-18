@@ -27,30 +27,21 @@ const Text = ({
 }) => {
   const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      x,
-      y,
-    };
+    event.shape = { x, y };
 
     onClick(event);
   };
 
   const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      x,
-      y,
-    };
+    event.shape = { x, y };
 
     onFocus(event);
   };
 
   const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      x,
-      y,
-    };
+    event.shape = { x, y };
 
     onMouseOver(event);
   };

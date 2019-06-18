@@ -1,9 +1,9 @@
 import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
-import randomColor from 'random-color';
+import randomColor from 'randomcolor';
 
 const Rect = ({
-  color = randomColor().hexString(),
+  color = randomColor(),
   forwardedRef,
   height,
   onClick = () => {},
@@ -16,40 +16,25 @@ const Rect = ({
   ...props
 }) => {
   const handleClick = event => {
+    const centroid = [x + width / 2, y + height];
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: [x + width / 2, y + height],
-      height,
-      width,
-      x,
-      y,
-    };
+    event.shape = { centroid, height, width, x, y };
 
     onClick(event);
   };
 
   const handleFocus = event => {
+    const centroid = [x + width / 2, y + height];
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: [x + width / 2, y + height],
-      height,
-      width,
-      x,
-      y,
-    };
+    event.shape = { centroid, height, width, x, y };
 
     onFocus(event);
   };
 
   const handleMouseOver = event => {
+    const centroid = [x + width / 2, y + height];
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: [x + width / 2, y + height],
-      height,
-      width,
-      x,
-      y,
-    };
+    event.shape = { centroid, height, width, x, y };
 
     onMouseOver(event);
   };

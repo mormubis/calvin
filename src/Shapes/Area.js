@@ -1,38 +1,13 @@
 import React, { forwardRef, memo } from 'react';
 import { area as shape } from 'd3';
 import PropTypes from 'prop-types';
-import randomColor from 'random-color';
+import randomColor from 'randomcolor';
 import _ from 'underscore';
 
 import Curves from '../Curves';
 import Layer from '../Layer';
 
-const centroid = ({ points = [] }) => {
-  const first = points[0] || [0, 0, 0];
-  const last = points[points.length - 1] || [0, 0, 0];
-
-  const dimensions = first.length;
-
-  return [
-    (first[0] + last[0]) / 2,
-    dimensions > 2 ? (first[2] + last[2]) / 2 : (first[1] + last[1]) / 2,
-  ];
-};
-
-const d = ({ curve: curveName, points = [], y0: rawY0, ...argv }) => {
-  const curve = Curves[curveName] || curveName;
-  const dimensions = (points[0] || []).length;
-  const y0 = rawY0 || (dimensions > 2 ? datum => datum[2] : undefined);
-
-  const area = Object.entries({ ...argv, curve, y0 }).reduce(
-    (acc, [key, value]) => acc[key](value),
-    shape(),
-  );
-
-  return area(points);
-};
-
-const areaAccessors = [
+const ACCESSORS = [
   'context',
   'curve',
   'defined',
@@ -47,7 +22,7 @@ const areaAccessors = [
 ];
 
 const Area = ({
-  color = randomColor().hexString(),
+  color = randomColor(),
   forwardedRef,
   onClick = () => {},
   onFocus = () => {},
@@ -56,41 +31,29 @@ const Area = ({
   y,
   ...argv
 }) => {
-  const areaAttributes = _.pick(argv, 'points', ...areaAccessors);
-  const props = _.omit(argv, 'points', ...areaAccessors);
+  const areaAttributes = _.pick(argv, 'points', ...ACCESSORS);
+  const props = _.omit(argv, 'points', ...ACCESSORS);
 
-  const position = centroid(areaAttributes);
-  const path = d(areaAttributes);
+  const centroid = Area.centroid(areaAttributes);
+  const d = Area.d(areaAttributes);
 
   const handleClick = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: position,
-      x,
-      y,
-    };
+    event.shape = { centroid, x, y };
 
     onClick(event);
   };
 
   const handleFocus = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: position,
-      x,
-      y,
-    };
+    event.shape = { centroid, x, y };
 
     onFocus(event);
   };
 
   const handleMouseOver = event => {
     // eslint-disable-next-line no-param-reassign
-    event.shape = {
-      centroid: position,
-      x,
-      y,
-    };
+    event.shape = { centroid, x, y };
 
     onMouseOver(event);
   };
@@ -100,7 +63,7 @@ const Area = ({
       <path
         fill={color}
         {...props}
-        d={path}
+        d={d}
         onClick={handleClick}
         onFocus={handleFocus}
         onMouseOver={handleMouseOver}
@@ -125,10 +88,35 @@ Area.propTypes = {
   y: PropTypes.number,
 };
 
+Area.centroid = ({ points = [] }) => {
+  const first = points[0] || [0, 0, 0];
+  const last = points[points.length - 1] || [0, 0, 0];
+
+  const dimensions = first.length;
+
+  return [
+    (first[0] + last[0]) / 2,
+    dimensions > 2 ? (first[2] + last[2]) / 2 : (first[1] + last[1]) / 2,
+  ];
+};
+
+Area.d = ({ curve: curveName, points = [], y0: rawY0, ...argv }) => {
+  const curve = Curves[curveName] || curveName;
+  const dimensions = (points[0] || []).length;
+  const y0 = rawY0 || (dimensions > 2 ? datum => datum[2] : undefined);
+
+  const area = Object.entries({ ...argv, curve, y0 }).reduce(
+    (acc, [key, value]) => acc[key](value),
+    shape(),
+  );
+
+  return area(points);
+};
+
 const AreaForwarded = memo(
   forwardRef((props, ref) => <Area {...props} forwardedRef={ref} />),
 );
 
-AreaForwarded.d = d;
+AreaForwarded.d = Area.d;
 
 export default AreaForwarded;
