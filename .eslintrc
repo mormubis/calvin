@@ -26,7 +26,7 @@
     ],
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": [
-      "on",
+      "error",
       {
         "extensions": [".js", ".jsx"]
       }
