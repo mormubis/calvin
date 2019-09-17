@@ -92,7 +92,7 @@ Area.centroid = ({ points = [] }) => {
   ];
 };
 
-Area.d = ({ curve: curveName, points = [], y0: rawY0, ...argv }) => {
+Area.d = ({ curve: curveName = 'linear', points = [], y0: rawY0, ...argv }) => {
   const curve = Curves[curveName] || curveName;
   const dimensions = (points[0] || []).length;
   const y0 = rawY0 || (dimensions > 2 ? datum => datum[2] : undefined);
