@@ -37,7 +37,7 @@ const Animation = ({
   const easing = Easings[ease] || Easings.linear;
   const seconds = duration / 1000;
   const frames = Math.round(seconds * FPS);
-  const values = Array(frames)
+  const values = new Array(frames)
     .fill(0)
     .map((ignore, index) => {
       const time = index / frames;
