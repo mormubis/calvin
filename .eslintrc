@@ -3,13 +3,9 @@
     "browser": true,
     "jest": true
   },
-  "extends": [
-    "canonical",
-    "airbnb",
-    "prettier",
-    "prettier/react"
-  ],
+  "extends": ["canonical", "airbnb", "prettier", "prettier/react"],
   "parser": "babel-eslint",
+  "plugins": ["react-hooks"],
   "settings": {
     "react": {
       "version": "16.8"
