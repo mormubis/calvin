@@ -97,7 +97,7 @@ Area.d = ({ curve: curveName = 'linear', points = [], y0: rawY0, ...argv }) => {
   const dimensions = (points[0] || []).length;
   const y0 = rawY0 || (dimensions > 2 ? datum => datum[2] : undefined);
 
-  const area = Object.entries({ ...argv, curve, y0 }).reduce(
+  const area = Object.entries({ ...argv, curve, ...(y0 && { y0 }) }).reduce(
     (acc, [key, value]) => acc[key](value),
     shape(),
   );
