@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, forwardRef } from 'react';
+import React, { forwardRef, memo, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import Easings from './Easings';
@@ -82,6 +82,6 @@ Animation.propTypes = {
   to: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
-export default forwardRef((props, ref) => (
-  <Animation {...props} forwardedRef={ref} />
-));
+export default memo(
+  forwardRef((props, ref) => <Animation {...props} forwardedRef={ref} />),
+);

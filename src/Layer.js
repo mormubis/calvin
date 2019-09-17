@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
 
 const Layer = ({
@@ -37,6 +37,6 @@ Layer.propTypes = {
   y: PropTypes.number,
 };
 
-export default forwardRef((props, ref) => (
-  <Layer {...props} forwardedRef={ref} />
-));
+export default memo(
+  forwardRef((props, ref) => <Layer {...props} forwardedRef={ref} />),
+);

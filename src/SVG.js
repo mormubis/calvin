@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, memo } from 'react';
 import PropTypes from 'prop-types';
 
 const SVG = ({ children, forwardedRef, height, width, ...props }) => (
@@ -25,6 +25,6 @@ SVG.propTypes = {
   width: PropTypes.number.isRequired,
 };
 
-export default forwardRef((props, ref) => (
-  <SVG {...props} forwardedRef={ref} />
-));
+export default memo(
+  forwardRef((props, ref) => <SVG {...props} forwardedRef={ref} />),
+);
