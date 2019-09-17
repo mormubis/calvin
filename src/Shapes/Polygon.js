@@ -1,8 +1,9 @@
 import React, { forwardRef, memo, useCallback } from 'react';
-import { polygonArea as shape, polygonCentroid as c } from 'd3';
+import { polygonCentroid as c } from 'd3';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
 
+import Area from './Area';
 import Layer from '../Layer';
 
 const Polygon = ({
@@ -17,7 +18,7 @@ const Polygon = ({
   ...props
 }) => {
   const centroid = Polygon.centroid({ points });
-  const d = Polygon.d({ points });
+
   const data = { centroid, points, x, y };
 
   const inject = useCallback(
@@ -32,13 +33,13 @@ const Polygon = ({
 
   return (
     <Layer label="polygon" x={x} y={y}>
-      <path
-        fill={color}
+      <Area
+        color={color}
         {...props}
-        d={d}
         onClick={inject(onClick)}
         onFocus={inject(onFocus)}
         onMouseOver={inject(onMouseOver)}
+        points={points}
         ref={forwardedRef}
       />
     </Layer>
@@ -63,9 +64,7 @@ Polygon.centroid = ({ points = [] }) => {
   return c(points);
 };
 
-Polygon.d = ({ points = [] }) => {
-  return shape(points);
-};
+Polygon.d = Area.d;
 
 export default memo(
   forwardRef((props, ref) => <Polygon {...props} forwardedRef={ref} />),
