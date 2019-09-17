@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
 
@@ -15,29 +15,18 @@ const Rect = ({
   y,
   ...props
 }) => {
-  const handleClick = event => {
-    const centroid = [x + width / 2, y + height];
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, height, width, x, y };
+  const centroid = [x + width / 2, y + height];
+  const data = { centroid, height, width, x, y };
 
-    onClick(event);
-  };
+  const inject = useCallback(
+    onCb => event => {
+      // eslint-disable-next-line no-param-reassign
+      event.shape = data;
 
-  const handleFocus = event => {
-    const centroid = [x + width / 2, y + height];
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, height, width, x, y };
-
-    onFocus(event);
-  };
-
-  const handleMouseOver = event => {
-    const centroid = [x + width / 2, y + height];
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, height, width, x, y };
-
-    onMouseOver(event);
-  };
+      onCb(event);
+    },
+    [JSON.stringify(data)],
+  );
 
   return (
     <rect
@@ -48,9 +37,9 @@ const Rect = ({
       x={x}
       y={y}
       {...props}
-      onClick={handleClick}
-      onFocus={handleFocus}
-      onMouseOver={handleMouseOver}
+      onClick={inject(onClick)}
+      onFocus={inject(onFocus)}
+      onMouseOver={inject(onMouseOver)}
       ref={forwardedRef}
     />
   );

@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import { polygonArea as shape, polygonCentroid as c } from 'd3';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
@@ -18,27 +18,17 @@ const Polygon = ({
 }) => {
   const centroid = Polygon.centroid({ points });
   const d = Polygon.d({ points });
+  const data = { centroid, points, x, y };
 
-  const handleClick = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
+  const inject = useCallback(
+    onCb => event => {
+      // eslint-disable-next-line no-param-reassign
+      event.shape = data;
 
-    onClick(event);
-  };
-
-  const handleFocus = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
-
-    onFocus(event);
-  };
-
-  const handleMouseOver = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
-
-    onMouseOver(event);
-  };
+      onCb(event);
+    },
+    [JSON.stringify(data)],
+  );
 
   return (
     <Layer label="polygon" x={x} y={y}>
@@ -46,9 +36,9 @@ const Polygon = ({
         fill={color}
         {...props}
         d={d}
-        onClick={handleClick}
-        onFocus={handleFocus}
-        onMouseOver={handleMouseOver}
+        onClick={inject(onClick)}
+        onFocus={inject(onFocus)}
+        onMouseOver={inject(onMouseOver)}
         ref={forwardedRef}
       />
     </Layer>

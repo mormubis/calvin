@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 const TEXT = {
@@ -25,26 +25,17 @@ const Text = ({
   y = 0,
   ...props
 }) => {
-  const handleClick = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { x, y };
+  const data = { x, y };
 
-    onClick(event);
-  };
+  const inject = useCallback(
+    onCb => event => {
+      // eslint-disable-next-line no-param-reassign
+      event.shape = data;
 
-  const handleFocus = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { x, y };
-
-    onFocus(event);
-  };
-
-  const handleMouseOver = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { x, y };
-
-    onMouseOver(event);
-  };
+      onCb(event);
+    },
+    [JSON.stringify(data)],
+  );
 
   return (
     <text
@@ -53,9 +44,9 @@ const Text = ({
       fill={color}
       textAnchor={TEXT[textAlign]}
       {...props}
-      onClick={handleClick}
-      onFocus={handleFocus}
-      onMouseOver={handleMouseOver}
+      onClick={inject(onClick)}
+      onFocus={inject(onFocus)}
+      onMouseOver={inject(onMouseOver)}
       ref={forwardedRef}
       x={`${x}`}
       y={`${y}`}

@@ -7,7 +7,8 @@ import _ from 'underscore';
 import Curves from '../Curves';
 import Layer from '../Layer';
 
-const lineAccessors = ['context', 'curve', 'defined'];
+const ACCESSORS = ['context', 'curve', 'defined'];
+const D = ['points'];
 
 const Line = ({
   color = randomColor(),
@@ -21,16 +22,17 @@ const Line = ({
   ...argv
 }) => {
   const element = useRef(null);
-  const lineAttributes = _.pick(argv, 'points', ...lineAccessors);
-  const props = _.omit(argv, ...lineAccessors);
+  const attributes = _.pick(argv, ...D, ...ACCESSORS);
+  const props = _.omit(argv, ...D, ...ACCESSORS);
 
-  const centroid = Line.centroid(lineAttributes);
-  const d = Line.d(lineAttributes);
+  const centroid = Line.centroid(attributes);
+  const d = Line.d(attributes);
+  const data = { centroid, thickness, x, y };
 
   const handleClick = event => {
     const length = element.current ? element.current.getTotalLength() : 0;
     // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, length, thickness, x, y };
+    event.shape = { ...data, length };
 
     onClick(event);
   };
@@ -38,7 +40,7 @@ const Line = ({
   const handleFocus = event => {
     const length = element.current ? element.current.getTotalLength() : 0;
     // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, length, thickness, x, y };
+    event.shape = { ...data, length };
 
     onFocus(event);
   };
@@ -46,7 +48,7 @@ const Line = ({
   const handleMouseOver = event => {
     const length = element.current ? element.current.getTotalLength() : 0;
     // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, length, thickness, x, y };
+    event.shape = { ...data, length };
 
     onMouseOver(event);
   };

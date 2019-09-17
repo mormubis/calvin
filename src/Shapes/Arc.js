@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import { arc as shape } from 'd3';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
@@ -17,6 +17,8 @@ const ACCESSORS = [
   'startAngle',
 ];
 
+const D = ['height', 'thickness', 'width'];
+
 const Arc = ({
   color = randomColor(),
   forwardedRef,
@@ -27,38 +29,22 @@ const Arc = ({
   y,
   ...argv
 }) => {
-  const arcAttributes = _.pick(
-    argv,
-    'height',
-    'thickness',
-    'width',
-    ...ACCESSORS,
+  const attributes = _.pick(argv, ...D, ...ACCESSORS);
+  const props = _.omit(argv, ...D, ...ACCESSORS);
+
+  const centroid = Arc.centroid(attributes);
+  const d = Arc.d(attributes);
+  const data = { ...Arc.attrs(attributes), centroid, x, y };
+
+  const inject = useCallback(
+    onCb => event => {
+      // eslint-disable-next-line no-param-reassign
+      event.shape = data;
+
+      onCb(event);
+    },
+    [JSON.stringify(data)],
   );
-  const props = _.omit(argv, 'height', 'thickness', 'width', ...ACCESSORS);
-
-  const centroid = Arc.centroid(arcAttributes);
-  const d = Arc.d(arcAttributes);
-
-  const handleClick = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
-
-    onClick(event);
-  };
-
-  const handleFocus = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
-
-    onFocus(event);
-  };
-
-  const handleMouseOver = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
-
-    onMouseOver(event);
-  };
 
   return (
     <Layer label="arc" x={x} y={y}>
@@ -66,9 +52,9 @@ const Arc = ({
         fill={color}
         {...props}
         d={d}
-        onClick={handleClick}
-        onFocus={handleFocus}
-        onMouseOver={handleMouseOver}
+        onClick={inject(onClick)}
+        onFocus={inject(onFocus)}
+        onMouseOver={inject(onMouseOver)}
         ref={forwardedRef}
       />
     </Layer>
@@ -94,51 +80,39 @@ Arc.propTypes = {
   y: PropTypes.number,
 };
 
-Arc.centroid = ({
+Arc.attrs = ({
   endAngle = 0,
   thickness,
   height = 0,
   startAngle = 0,
   width = 0,
-  ...argv
+  ...rest
 }) => {
   const outerRadius = Math.min(height / 2, width / 2);
 
-  const arc = shape();
-
-  return arc.centroid({
-    ...argv,
+  return {
+    ...rest,
     endAngle: (endAngle / 360) * 2 * Math.PI,
     innerRadius: thickness ? outerRadius - thickness : 0,
     outerRadius,
     startAngle: (startAngle / 360) * 2 * Math.PI,
-  });
+  };
 };
 
-Arc.d = ({
-  cornerRadius,
-  endAngle = 0,
-  thickness,
-  height = 0,
-  startAngle = 0,
-  width = 0,
-  ...argv
-}) => {
-  const outerRadius = Math.min(height / 2, width / 2);
+Arc.centroid = attrs => {
+  const arc = shape();
 
+  return arc.centroid(Arc.attrs(attrs));
+};
+
+Arc.d = ({ cornerRadius, ...attrs }) => {
   let arc = shape();
 
   if (cornerRadius) {
     arc = arc.cornerRadius(cornerRadius);
   }
 
-  return arc({
-    ...argv,
-    endAngle: (endAngle / 360) * 2 * Math.PI,
-    innerRadius: thickness ? outerRadius - thickness : 0,
-    outerRadius,
-    startAngle: (startAngle / 360) * 2 * Math.PI,
-  });
+  return arc(Arc.attrs(attrs));
 };
 
 const ArcForwarded = memo(

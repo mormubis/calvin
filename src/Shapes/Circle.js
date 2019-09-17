@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
 
@@ -13,29 +13,18 @@ const Circle = ({
   y,
   ...props
 }) => {
-  const handleClick = event => {
-    const centroid = [(x + radius) / 2, (y + radius) / 2];
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, radius, x, y };
+  const centroid = [(x + radius) / 2, (y + radius) / 2];
+  const data = { centroid, radius, x, y };
 
-    onClick(event);
-  };
+  const inject = useCallback(
+    onCb => event => {
+      // eslint-disable-next-line no-param-reassign
+      event.shape = data;
 
-  const handleFocus = event => {
-    const centroid = [(x + radius) / 2, (y + radius) / 2];
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, radius, x, y };
-
-    onFocus(event);
-  };
-
-  const handleMouseOver = event => {
-    const centroid = [(x + radius) / 2, (y + radius) / 2];
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, radius, x, y };
-
-    onMouseOver(event);
-  };
+      onCb(event);
+    },
+    [JSON.stringify(data)],
+  );
 
   return (
     <circle
@@ -44,9 +33,9 @@ const Circle = ({
       fill={color}
       r={radius}
       {...props}
-      onClick={handleClick}
-      onFocus={handleFocus}
-      onMouseOver={handleMouseOver}
+      onClick={inject(onClick)}
+      onFocus={inject(onFocus)}
+      onMouseOver={inject(onMouseOver)}
       ref={forwardedRef}
     />
   );

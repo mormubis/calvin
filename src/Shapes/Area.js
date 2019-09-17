@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import { area as shape } from 'd3';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
@@ -21,6 +21,8 @@ const ACCESSORS = [
   'y1',
 ];
 
+const D = ['points'];
+
 const Area = ({
   color = randomColor(),
   forwardedRef,
@@ -31,32 +33,22 @@ const Area = ({
   y,
   ...argv
 }) => {
-  const areaAttributes = _.pick(argv, 'points', ...ACCESSORS);
-  const props = _.omit(argv, 'points', ...ACCESSORS);
+  const attributes = _.pick(argv, ...D, ...ACCESSORS);
+  const props = _.omit(argv, ...D, ...ACCESSORS);
 
-  const centroid = Area.centroid(areaAttributes);
-  const d = Area.d(areaAttributes);
+  const centroid = Area.centroid(attributes);
+  const d = Area.d(attributes);
+  const data = { centroid, x, y };
 
-  const handleClick = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
+  const inject = useCallback(
+    onCb => event => {
+      // eslint-disable-next-line no-param-reassign
+      event.shape = data;
 
-    onClick(event);
-  };
-
-  const handleFocus = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
-
-    onFocus(event);
-  };
-
-  const handleMouseOver = event => {
-    // eslint-disable-next-line no-param-reassign
-    event.shape = { centroid, x, y };
-
-    onMouseOver(event);
-  };
+      onCb(event);
+    },
+    [JSON.stringify(data)],
+  );
 
   return (
     <Layer label="area" x={x} y={y}>
@@ -64,9 +56,9 @@ const Area = ({
         fill={color}
         {...props}
         d={d}
-        onClick={handleClick}
-        onFocus={handleFocus}
-        onMouseOver={handleMouseOver}
+        onClick={inject(onClick)}
+        onFocus={inject(onFocus)}
+        onMouseOver={inject(onMouseOver)}
         ref={forwardedRef}
       />
     </Layer>
