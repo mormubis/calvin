@@ -75,5 +75,5 @@
     "test": "jest --silent",
     "test:watch": "jest --watch"
   },
-  "version": "2.2.7"
+  "version": "2.2.8"
 }
