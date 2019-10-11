@@ -70,7 +70,7 @@ Gradient.propTypes = {
   ]),
   forwardedRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+    PropTypes.shape({ current: PropTypes.any }),
   ]),
   id: PropTypes.string.isRequired,
   radial: PropTypes.bool,

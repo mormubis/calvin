@@ -73,7 +73,7 @@ Animation.propTypes = {
   ease: PropTypes.string,
   forwardedRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+    PropTypes.shape({ current: PropTypes.any }),
   ]),
   from: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   maxCount: PropTypes.number,

@@ -19,7 +19,7 @@ SVG.propTypes = {
   ]),
   forwardedRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+    PropTypes.shape({ current: PropTypes.any }),
   ]),
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
