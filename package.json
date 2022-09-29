@@ -1,7 +1,7 @@
 {
   "author": "Adrian de la Rosa <adrian@delarosab.me>",
   "dependencies": {
-    "d3": "^5.15.0",
+    "d3": "^7.6.1",
     "randomcolor": "^0.5.4",
     "underscore": "^1.9.2"
   },
